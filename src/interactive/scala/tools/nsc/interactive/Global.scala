@@ -334,6 +334,7 @@ class Global(settings: Settings, _reporter: Reporter, projectName: String = "") 
    *  @param  result   The transformed node
    */
   override def signalDone(context: Context, old: Tree, result: Tree): Unit = {
+    val dbg = if (result.toString.contains("Array[String]")) true else false
     val canObserveTree = (
          interruptsEnabled
       && lockedCount == 0
@@ -343,7 +344,10 @@ class Global(settings: Settings, _reporter: Reporter, projectName: String = "") 
       if (context.unit.exists &&
           result.pos.isOpaqueRange &&
           (result.pos includes context.unit.targetPos)) {
+        if (dbg) println(s"TRY LOCATE ${context.unit.targetPos}")
         var located = new TypedLocator(context.unit.targetPos) locateIn result
+
+        if (dbg) println(s"LOCATED[empty=${located == EmptyTree}] ==> ${located} :: ${located.symbol} :: ${located.tpe}")
         if (located == EmptyTree) {
           println("something's wrong: no "+context.unit+" in "+result+result.pos)
           located = result
