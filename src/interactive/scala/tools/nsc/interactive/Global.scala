@@ -345,7 +345,7 @@ class Global(settings: Settings, _reporter: Reporter, projectName: String = "") 
           (result.pos includes context.unit.targetPos)) {
         var located = new TypedLocator(context.unit.targetPos) locateIn result
         if (located == EmptyTree) {
-          println("something's wrong: no "+context.unit+" in "+result+result.pos)
+          debugLog(s"something's wrong: no ${result} at ${result.pos} in ${context.unit}")
           located = result
         }
         throw new TyperResult(located)
